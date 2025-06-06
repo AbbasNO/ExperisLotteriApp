@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO
 {
-    public class AvailableTicketDTO
+    public class AvailableTicketsDTO
     {
-        public int AvailableTicket { get; set; }
-        public int Reserved { get; set; }
+        public int AvailableTickets { get; set; }
+        public int ReservedTickets { get; set; }
     }
 }

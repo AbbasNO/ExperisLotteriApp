@@ -35,7 +35,7 @@ namespace Server.Controllers
                 int availableCount = await db.Tickets.CountAsync(t => !t.IsReserved);
                 int ReservedCount = await db.Tickets.CountAsync(t => t.IsReserved);
 
-                var data = new AvailableTicketDTO() { AvailableTicket = availableCount, Reserved = ReservedCount };
+                var data = new AvailableTicketsDTO() { AvailableTickets = availableCount, ReservedTickets = ReservedCount };
 
                 return Ok(data);
             }

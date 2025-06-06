@@ -1,29 +1,33 @@
 ﻿@page "/"
 @using System.Text.Json.Serialization
+@using Client.Services
 @using Shared.DTO
 
 <PageTitle>Expris lotteri App</PageTitle>
 
-@inject HttpClient Http
+@inject ITicketService TicketService
 
-<p style="font-size: 24px; color: green;">
-    <strong>Available Tickets:</strong> @TicketsCount.AvailableTicket
-</p>
+@if (TicketsCount == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <p style="font-size: 24px; color: green;">
+        <strong>Available Tickets:</strong> @TicketsCount.AvailableTickets
+    </p>
 
-<p style="font-size: 24px; color: red;">
-    <strong>Available Tickets:</strong> @TicketsCount.Reserved
-</p>
+    <p style="font-size: 24px; color: red;">
+        <strong>Reserved Tickets:</strong> @TicketsCount.ReservedTickets
+    </p>
+}
 
 @code {
-    private AvailableTicketDTO TicketsCount;
+    private AvailableTicketsDTO TicketsCount;
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await Http.GetFromJsonAsync<AvailableTicketDTO>("api/tickets/available-count");
-        if (response != null)
-        {
-            TicketsCount = response;
-        }
+        TicketsCount = await TicketService.GetAvailableCountAsync();
     }
 
 }
