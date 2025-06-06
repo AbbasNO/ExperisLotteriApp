@@ -1,7 +1,24 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Abbas\\Desktop\\ExperisLotteriApp\\ExperisLotteriApp\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4D79CEA7-EC5C-450F-9155-054234FB31D6}|Client\\Client.csproj|c:\\users\\abbas\\desktop\\experislotteriapp\\experislotteriapp\\client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4D79CEA7-EC5C-450F-9155-054234FB31D6}|Client\\Client.csproj|solutionrelative:client\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4D79CEA7-EC5C-450F-9155-054234FB31D6}|Client\\Client.csproj|c:\\users\\abbas\\desktop\\experislotteriapp\\experislotteriapp\\client\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4D79CEA7-EC5C-450F-9155-054234FB31D6}|Client\\Client.csproj|solutionrelative:client\\pages\\home.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4C8943B1-BD86-4872-A232-FF5E7CECB8C8}|Server\\Server.csproj|c:\\users\\abbas\\desktop\\experislotteriapp\\experislotteriapp\\server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4C8943B1-BD86-4872-A232-FF5E7CECB8C8}|Server\\Server.csproj|solutionrelative:server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4D79CEA7-EC5C-450F-9155-054234FB31D6}|Client\\Client.csproj|c:\\users\\abbas\\desktop\\experislotteriapp\\experislotteriapp\\client\\pages\\counter.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4D79CEA7-EC5C-450F-9155-054234FB31D6}|Client\\Client.csproj|solutionrelative:client\\pages\\counter.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 1,
@@ -9,11 +26,63 @@
       "DocumentGroups": [
         {
           "DockedHeight": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Abbas\\Desktop\\ExperisLotteriApp\\ExperisLotteriApp\\Server\\Program.cs",
+              "RelativeDocumentMoniker": "Server\\Program.cs",
+              "ToolTip": "C:\\Users\\Abbas\\Desktop\\ExperisLotteriApp\\ExperisLotteriApp\\Server\\Program.cs",
+              "RelativeToolTip": "Server\\Program.cs",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAAACgAAAAXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-06T16:30:49.95Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Abbas\\Desktop\\ExperisLotteriApp\\ExperisLotteriApp\\Client\\Program.cs",
+              "RelativeDocumentMoniker": "Client\\Program.cs",
+              "ToolTip": "C:\\Users\\Abbas\\Desktop\\ExperisLotteriApp\\ExperisLotteriApp\\Client\\Program.cs",
+              "RelativeToolTip": "Client\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-06T16:29:39.462Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Home.razor",
+              "DocumentMoniker": "C:\\Users\\Abbas\\Desktop\\ExperisLotteriApp\\ExperisLotteriApp\\Client\\Pages\\Home.razor",
+              "RelativeDocumentMoniker": "Client\\Pages\\Home.razor",
+              "ToolTip": "C:\\Users\\Abbas\\Desktop\\ExperisLotteriApp\\ExperisLotteriApp\\Client\\Pages\\Home.razor",
+              "RelativeToolTip": "Client\\Pages\\Home.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-06T16:18:29.409Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Counter.razor",
+              "DocumentMoniker": "C:\\Users\\Abbas\\Desktop\\ExperisLotteriApp\\ExperisLotteriApp\\Client\\Pages\\Counter.razor",
+              "RelativeDocumentMoniker": "Client\\Pages\\Counter.razor",
+              "ToolTip": "C:\\Users\\Abbas\\Desktop\\ExperisLotteriApp\\ExperisLotteriApp\\Client\\Pages\\Counter.razor",
+              "RelativeToolTip": "Client\\Pages\\Counter.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-06T16:18:12.62Z",
+              "EditorCaption": ""
             }
           ]
         }
