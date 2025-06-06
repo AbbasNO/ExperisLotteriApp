@@ -4,3 +4,8 @@ obj/
 **/bin/
 **/obj/
 *.vsidx
+*.v2
+/ExperisLotteriApp/.vs/ExperisLotteriApp/v17
+/ExperisLotteriApp/.vs/ExperisLotteriApp
+/ExperisLotteriApp/.vs
+ExperisLotteriApp/.vs/ExperisLotteriApp/v17/DocumentLayout.json
