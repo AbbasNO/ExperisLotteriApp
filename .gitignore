@@ -1,21 +1,20 @@
-# .NET build artifacts
+# Ignore build output directories
 bin/
 obj/
 **/bin/
 **/obj/
+
+# Ignore Visual Studio temporary files, workspace, and user-specific files
+.vs/
+*.vs/
 *.vsidx
 *.v2
-/ExperisLotteriApp/.vs/ExperisLotteriApp/v17
-/ExperisLotteriApp/.vs/ExperisLotteriApp
-/ExperisLotteriApp/.vs
-ExperisLotteriApp/.vs/ExperisLotteriApp/v17/DocumentLayout.json
-*.vsidx
-*.vs/
 
-# Visual Studio user settings
-.vscode/
+# Ignore Visual Studio user-specific files
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
 
+# VS Code settings folder
+.vscode/

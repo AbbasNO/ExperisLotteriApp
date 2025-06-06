@@ -1,0 +1,15 @@
+﻿@page "/"
+
+<PageTitle>Expris lotteri App</PageTitle>
+
+@inject HttpClient Http
+<p>@message</p>
+
+@code {
+    private string message;
+
+    protected override async Task OnInitializedAsync()
+    {
+        message = await Http.GetStringAsync("api/tickets/test-db");
+    }
+}
