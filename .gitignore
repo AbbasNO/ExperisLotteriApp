@@ -10,4 +10,12 @@ obj/
 /ExperisLotteriApp/.vs
 ExperisLotteriApp/.vs/ExperisLotteriApp/v17/DocumentLayout.json
 *.vsidx
-/ExperisLotteriApp/.vs
+*.vs/
+
+# Visual Studio user settings
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+

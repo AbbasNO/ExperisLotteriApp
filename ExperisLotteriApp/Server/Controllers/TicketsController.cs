@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR.Protocol;
+using Microsoft.EntityFrameworkCore;
+using Server.Data;
 using Shared.DTO;
 using Shared.Models;
 using System.Net.Sockets;
@@ -12,11 +14,26 @@ namespace Server.Controllers
     public class TicketsController : ControllerBase
     {
         private static readonly object _lock = new();
-        private static readonly List<Ticket> Tickets = Enumerable.Range(1, 100).Select(i => new Ticket { Number = i }).ToList();
-        private static readonly List<Ticket> Winners = new();
+        private static readonly List<Shared.Models.Ticket> Tickets = Enumerable.Range(1, 100).Select(i => new Shared.Models.Ticket { Number = i }).ToList();
+        private static readonly List<Shared.Models.Ticket> Winners = new();
 
         [HttpGet]
-        public ActionResult<List<Ticket>> GetAll() => Tickets;
+        public ActionResult<List<Shared.Models.Ticket>> GetAll() => Tickets;
+
+        [HttpGet("test-db")]
+        public async Task<IActionResult> TestDbConnection([FromServices] LotteriDbContext db)
+        {
+            try
+            {
+                var count = await db.Tickets.CountAsync();
+                return Ok($"Database is working. Total tickets: {count}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Database error: {ex.Message}");
+            }
+        }
+
 
         [HttpPost("reserve")]
         [Authorize]
