@@ -9,3 +9,5 @@ obj/
 /ExperisLotteriApp/.vs/ExperisLotteriApp
 /ExperisLotteriApp/.vs
 ExperisLotteriApp/.vs/ExperisLotteriApp/v17/DocumentLayout.json
+*.vsidx
+/ExperisLotteriApp/.vs
