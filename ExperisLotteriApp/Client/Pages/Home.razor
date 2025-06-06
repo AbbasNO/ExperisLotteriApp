@@ -1,15 +1,29 @@
 ﻿@page "/"
+@using System.Text.Json.Serialization
+@using Shared.DTO
 
 <PageTitle>Expris lotteri App</PageTitle>
 
 @inject HttpClient Http
-<p>@message</p>
+
+<p style="font-size: 24px; color: green;">
+    <strong>Available Tickets:</strong> @TicketsCount.AvailableTicket
+</p>
+
+<p style="font-size: 24px; color: red;">
+    <strong>Available Tickets:</strong> @TicketsCount.Reserved
+</p>
 
 @code {
-    private string message;
+    private AvailableTicketDTO TicketsCount;
 
     protected override async Task OnInitializedAsync()
     {
-        message = await Http.GetStringAsync("api/tickets/test-db");
+        var response = await Http.GetFromJsonAsync<AvailableTicketDTO>("api/tickets/available-count");
+        if (response != null)
+        {
+            TicketsCount = response;
+        }
     }
+
 }

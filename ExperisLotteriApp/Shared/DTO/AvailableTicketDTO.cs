@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO
 {
-    public class DrawResult
+    public class AvailableTicketDTO
     {
-        public List<TicketDTO> Winners { get; set; } = new();
+        public int AvailableTicket { get; set; }
+        public int Reserved { get; set; }
     }
 }
