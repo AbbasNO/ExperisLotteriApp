@@ -10,5 +10,6 @@ namespace Shared.DTO
     {
         public int AvailableTickets { get; set; }
         public int ReservedTickets { get; set; }
+        public int OnHoldTickets { get; set; }
     }
 }

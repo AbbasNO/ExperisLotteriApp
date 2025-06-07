@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Shared.DTO
 {
-    public class TicketReserveRequest
+    public class TicketReserveRequestDTO
     {
         public string User { get; set; } = string.Empty;
         public List<int> TicketNumbers { get; set; } = new();
+        public bool FewTicketsLeft { get; set; }
     }
 }

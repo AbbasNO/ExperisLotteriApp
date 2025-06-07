@@ -20,7 +20,7 @@ namespace Server.Data
         [Column("IS_WINNER")]
         public bool IsWinner { get; set; }
 
-        [Column("CONTROL_TIMESTAP")]
+        [Column("CONTROL_TIMESTAMP")]
         public DateTime? ControlTimestamp { get; set; }
 
         [Column("EMPLOYEE_ID")]
