@@ -41,5 +41,17 @@ namespace Client.Services
             var response = await _http.PostAsJsonAsync("api/tickets/buy", request);
             return response.IsSuccessStatusCode;
         }
+
+        public async Task<List<WinnerResultDTO>> DrawWinnersAsync()
+        {
+            var result = await _http.PostAsJsonAsync("api/tickets/draw", new { });
+
+            if (result.IsSuccessStatusCode)
+            {
+                return await result.Content.ReadFromJsonAsync<List<WinnerResultDTO>>() ?? new();
+            }
+
+            throw new Exception("Could not draw winners");
+        }
     }
 }

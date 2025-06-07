@@ -1,0 +1,68 @@
+﻿@page "/draw"
+@using Client.Services
+@using Shared.DTO
+@inject ITicketService TicketService
+
+<h3>Draw Winners</h3>
+
+<button class="btn btn-primary" @onclick="GetLotteriWinners" disabled="@drawing">Draw Winners</button>
+
+@if (drawing)
+{
+    <p><em>Drawing winners, please wait...</em></p>
+}
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <p style="color:red">@error</p>
+}
+
+@if (winners?.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Prize</th>
+                <th>Ticket Number</th>
+                <th>User</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var winner in winners)
+            {
+                <tr>
+                    <td>@winner.Prize</td>
+                    <td>@winner.TicketNumber.ToString("D3")</td>
+                    <td>@(string.IsNullOrWhiteSpace(winner.User) ? "Unsold Ticket" : winner.User)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (!drawing && winners is not null)
+{
+    <p>No winners found.</p>
+}
+
+@code {
+    private List<WinnerResultDTO>? winners;
+    private bool drawing = false;
+    private string? error;
+
+    private async Task GetLotteriWinners()
+    {
+        drawing = true;
+        error = null;
+
+        try
+        {
+            winners = await TicketService.DrawWinnersAsync();
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+
+        drawing = false;
+    }
+}

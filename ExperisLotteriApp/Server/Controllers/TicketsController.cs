@@ -136,6 +136,42 @@ namespace Server.Controllers
             return Ok(resultList);
         }
 
+        [HttpPost("draw")]
+        public async Task<IActionResult> DrawWinners()
+        {
+            var tickets = await _db.Tickets.ToListAsync();
+            if (tickets.Count < 3)
+                return BadRequest("Not enough tickets to draw.");
+
+            var rnd = new Random();
+            var drawn = tickets.OrderBy(x => rnd.Next()).Take(3).ToList();
+
+            for (int i = 0; i < drawn.Count; i++)
+            {
+                drawn[i].IsWinner = true;
+            }
+
+            var result = drawn.Select((t, i) => new
+            {
+                Prize = $"Prize {i + 1}",
+                TicketNumber = t.Id,
+                User = string.IsNullOrWhiteSpace(t.ReservedBy) ? "Unsold Ticket" : t.ReservedBy
+            }).ToList();
+
+            // Reset all tickets (new game)
+            foreach (var ticket in tickets)
+            {
+                ticket.IsReserved = false;
+                ticket.ReservedBy = null;
+                ticket.ControlTimestamp = null;
+                ticket.IsWinner = false;
+            }
+
+            await _db.SaveChangesAsync();
+
+            return Ok(result);
+        }
+
         private async Task<int> AvailableTickets(DateTime holdExpiration)
         {
             int availableCount = await _db.Tickets.CountAsync(t =>
