@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Shared.Enum
 {
-    internal class PrizeLevel
+    public enum PrizeLevel
     {
+        First = 1,
+        Second = 2,
+        Third = 3
     }
 }
