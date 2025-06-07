@@ -13,6 +13,7 @@ namespace Shared.DTO
         public string? ReservedBy { get; set; }
         public bool IsWinner { get; set; } = false;
         public DateTime? ControlStamp { get; set; }
+        public int? EmployeeId { get; set; }
 
     }
 }

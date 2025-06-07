@@ -18,10 +18,28 @@ namespace Client.Services
             return result ?? new AvailableTicketsDTO();
         }
 
-        public async Task<List<TicketDTO>> GetAllTicketsAsync()
+        public async Task<List<TicketDTO>> HoldTicketsAsync(int count)
         {
-            var tickets = await _http.GetFromJsonAsync<List<TicketDTO>>("api/tickets");
-            return tickets ?? new List<TicketDTO>();
+            var response = await _http.PostAsync($"api/tickets/hold?count={count}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<List<TicketDTO>>();
+                return result ?? new List<TicketDTO>();
+            }
+
+            throw new Exception(await response.Content.ReadAsStringAsync());
+        }
+
+        public async Task<bool> BuyTicketsAsync(List<int> ticketNumbers)
+        {
+            var request = new TicketReserveRequestDTO
+            {
+                User = "TestUser",
+                TicketNumbers = ticketNumbers
+            };
+
+            var response = await _http.PostAsJsonAsync("api/tickets/buy", request);
+            return response.IsSuccessStatusCode;
         }
     }
 }

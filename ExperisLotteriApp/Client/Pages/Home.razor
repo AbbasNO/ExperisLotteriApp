@@ -1,37 +1,53 @@
 ﻿@page "/"
-@using System.Text.Json.Serialization
 @using Client.Services
 @using Shared.DTO
-
-<PageTitle>Expris lotteri App</PageTitle>
-
 @inject ITicketService TicketService
+@inject NavigationManager NavManager
 
-@if (TicketsCount == null)
+<h3>Available Tickets: @TicketsCount?.AvailableTickets</h3>
+<h3>Reserved Tickets: @TicketsCount?.ReservedTickets</h3>
+<h3>On Hold Tickets: @TicketsCount?.OnHoldTickets</h3>
+
+<div class="mt-4">
+    <label>How many tickets do you want to hold (1–10)?</label>
+    <input type="number" min="1" max="10" @bind="ticketsToHold" />
+    <button class="btn btn-primary" @onclick="ReserveTickets">Reserve</button>
+</div>
+
+@if (!string.IsNullOrEmpty(errorMessage))
 {
-    <p>Loading...</p>
-}
-else
-{
-    <p style="font-size: 24px; color: green;">
-        <strong>Available Tickets:</strong> @TicketsCount.AvailableTickets
-    </p>
-
-    <p style="font-size: 24px; color: red;">
-        <strong>Reserved Tickets:</strong> @TicketsCount.ReservedTickets
-    </p>
-
-    <p style="font-size: 24px; color: yellow;">
-        <strong>Reserved Tickets:</strong> @TicketsCount.OnHoldTickets
-    </p>
+    <p style="color:red">@errorMessage</p>
 }
 
 @code {
-    private AvailableTicketsDTO TicketsCount;
+    private AvailableTicketsDTO? TicketsCount;
+    private int ticketsToHold = 1;
+    private string? errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
         TicketsCount = await TicketService.GetAvailableCountAsync();
     }
 
+    private async Task ReserveTickets()
+    {
+        try
+        {
+            var heldTickets = await TicketService.HoldTicketsAsync(ticketsToHold);
+            if (heldTickets.Any())
+            {
+                // Navigate to confirmation page with ticket numbers in query
+                var ids = string.Join(",", heldTickets.Select(t => t.Number));
+                NavManager.NavigateTo($"/hold-confirmation?ids={ids}");
+            }
+            else
+            {
+                errorMessage = "No tickets could be reserved.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
 }

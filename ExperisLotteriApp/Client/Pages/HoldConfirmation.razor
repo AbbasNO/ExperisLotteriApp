@@ -1,0 +1,86 @@
+﻿@page "/hold-confirmation"
+@using Client.Services
+@using Shared.DTO
+@inject ITicketService TicketService
+@inject NavigationManager Navigation
+
+<PageTitle>Confirm Tickets</PageTitle>
+
+<h3>Tickets On Hold</h3>
+
+@if (loading)
+{
+    <p>Loading ticket details...</p>
+}
+else if (heldTickets.Any())
+{
+    <ul class="list-group mb-3">
+        @foreach (var ticket in heldTickets)
+        {
+            <li class="list-group-item">🎟️ Ticket #@ticket.Number</li>
+        }
+    </ul>
+
+    <button class="btn btn-success" @onclick="BuyTickets" disabled="@buying">
+        @(buying ? "Processing..." : "Buy Tickets")
+    </button>
+
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <div class="alert alert-danger mt-3">@error</div>
+    }
+}
+else
+{
+    <p class="text-warning">No tickets found in hold.</p>
+}
+
+@code {
+    [Parameter] public string? ids { get; set; }
+
+    private List<TicketDTO> heldTickets = new();
+    private string? error;
+    private bool buying = false;
+    private bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var uri = new Uri(Navigation.Uri);
+            var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+            var idString = query["ids"];
+            if (!string.IsNullOrEmpty(idString))
+            {
+                var numbers = idString.Split(',').Select(int.Parse).ToList();
+                heldTickets = numbers.Select(n => new TicketDTO { Number = n }).ToList();
+            }
+        }
+        catch
+        {
+            error = "Invalid ticket selection.";
+        }
+
+        loading = false;
+    }
+
+    private async Task BuyTickets()
+    {
+        buying = true;
+        error = null;
+
+        var success = await TicketService.BuyTicketsAsync(heldTickets.Select(t => t.Number).ToList());
+
+        if (success)
+        {
+            Navigation.NavigateTo("/confirm");
+        }
+        else
+        {
+            error = "Failed to buy tickets. Hold may have expired.";
+        }
+
+        buying = false;
+    }
+}

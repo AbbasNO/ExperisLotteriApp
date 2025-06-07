@@ -12,13 +12,19 @@ namespace Server.Controllers
     [Route("api/[controller]")]
     public class TicketsController : ControllerBase
     {
+        private readonly LotteriDbContext _db;
+
+        public TicketsController(LotteriDbContext db)
+        {
+            _db = db;
+        }
 
         [HttpGet("test-db")]
-        public async Task<IActionResult> TestDbConnection([FromServices] LotteriDbContext db)
+        public async Task<IActionResult> TestDbConnection()
         {
             try
             {
-                var count = await db.Tickets.CountAsync();
+                var count = await _db.Tickets.CountAsync();
                 return Ok($"Database is working. Total tickets: {count}");
             }
             catch (Exception ex)
@@ -28,7 +34,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("available-count")]
-        public async Task<IActionResult> GetAvailableTicketCount([FromServices] LotteriDbContext db)
+        public async Task<IActionResult> GetAvailableTicketCount()
         {
             try
             {
@@ -37,9 +43,9 @@ namespace Server.Controllers
 
                 var data = new AvailableTicketsDTO
                 {
-                    AvailableTickets = await AvailableTickets(db, holdExpiration),
-                    ReservedTickets = await ReservedTickets(db),
-                    OnHoldTickets = await OnHoldTickets(db, holdExpiration)
+                    AvailableTickets = await AvailableTickets(holdExpiration),
+                    ReservedTickets = await ReservedTickets(),
+                    OnHoldTickets = await OnHoldTickets(holdExpiration)
                 };
 
                 return Ok(data);
@@ -50,23 +56,89 @@ namespace Server.Controllers
             }
         }
 
-        //[HttpPost("hold/{numberOfTickets}")]
-        //public async Task<IActionResult> HoldTicket(int numberOfTickets, [FromServices] LotteriDbContext db)
+        //[HttpGet("on-hold")]
+        //public async Task<ActionResult<List<TicketDTO>>> GetOnHoldTickets()
         //{
-        //    var ticket = await db.Tickets.Where(t => t.ControlTimestamp == null).;
+        //    var holdExpiration = DateTime.UtcNow.AddMinutes(-2);
+        //    var onHoldTickets = await _db.Tickets
+        //        .Where(t => t.ControlTimestamp != null && t.ControlTimestamp >= holdExpiration && !t.IsReserved)
+        //        .Select(t => new TicketDTO
+        //        {
+        //            Number = t.Id,
+        //            IsReserved = t.IsReserved,
+        //            ReservedBy = t.ReservedBy,
+        //            IsWinner = t.IsWinner,
+        //            ControlStamp = t.ControlTimestamp,
+        //            EmployeeId = t.EmployeeId
+        //        })
+        //        .ToListAsync();
 
-        //    if (ticket == null || ticket.IsReserved)
-        //        return NotFound("Ticket not found or already reserved.");
-
-        //    ticket.ControlTimestamp = DateTime.UtcNow;
-        //    await db.SaveChangesAsync();
-
-        //    return Ok("Hold timestamp updated.");
+        //    return Ok(onHoldTickets);
         //}
 
-        private async Task<int> AvailableTickets(LotteriDbContext db, DateTime holdExpiration)
+        [HttpPost("buy")]
+        public async Task<IActionResult> BuyTickets([FromBody] TicketReserveRequestDTO request)
         {
-            int availableCount = await db.Tickets.CountAsync(t =>
+            var holdExpiration = DateTime.UtcNow.AddMinutes(-2);
+
+            var tickets = await _db.Tickets
+                .Where(t => request.TicketNumbers.Contains(t.Id))
+                .ToListAsync();
+
+            if (tickets.Count != request.TicketNumbers.Count)
+                return BadRequest("Some tickets do not exist.");
+
+            if (tickets.Any(t => t.IsReserved || t.ControlTimestamp == null || t.ControlTimestamp < holdExpiration))
+                return BadRequest("One or more tickets are no longer available to buy.");
+
+            foreach (var ticket in tickets)
+            {
+                ticket.IsReserved = true;
+                ticket.ReservedBy = request.User;
+            }
+
+            await _db.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpPost("hold")]
+        public async Task<IActionResult> HoldTickets([FromQuery] int count = 1)
+        {
+            if (count <= 0 || count > 10)
+                return BadRequest("Invalid number of tickets requested.");
+
+            var now = DateTime.UtcNow;
+            var holdExpiration = now.AddMinutes(-2);
+
+            // Phase 1: Get available ticket IDs
+            var candidateTicketIds = await GetCandidateTicketIds(holdExpiration);
+
+            if (candidateTicketIds.Count == 0)
+                return BadRequest("No tickets available to hold at the moment.");
+
+            if (candidateTicketIds.Count < count)
+                return BadRequest("Not enough tickets available to hold at the moment.");
+
+            // Phase 2: Randomly select N ticket IDs
+            var selectedIds = PickRandomTicketIds(candidateTicketIds, count);
+
+            // Phase 3: Fetch and update selected tickets
+            var selectedTickets = await MarkTicketsOnHold(selectedIds, now);
+
+            var resultList = new List<TicketDTO>();
+
+            foreach(var selected in selectedTickets)
+            {
+                resultList.Add(new TicketDTO { Number = selected.Id, ControlStamp = selected.ControlTimestamp});
+            }
+
+            return Ok(resultList);
+        }
+
+        private async Task<int> AvailableTickets(DateTime holdExpiration)
+        {
+            int availableCount = await _db.Tickets.CountAsync(t =>
                 !t.IsReserved &&
                 (t.ControlTimestamp == null || t.ControlTimestamp < holdExpiration)
             );
@@ -74,20 +146,52 @@ namespace Server.Controllers
             return availableCount;
         }
 
-        private async Task<int> ReservedTickets(LotteriDbContext db)
+        private async Task<int> ReservedTickets()
         {
-            int reservedCount = await db.Tickets.CountAsync(t => t.IsReserved);
+            int reservedCount = await _db.Tickets.CountAsync(t => t.IsReserved);
 
             return reservedCount;
         }
 
-        private async Task<int> OnHoldTickets(LotteriDbContext db, DateTime holdExpiration)
+        private async Task<int> OnHoldTickets(DateTime holdExpiration)
         {
-            int onHoldCount = await db.Tickets.CountAsync(t =>
+            int onHoldCount = await _db.Tickets.CountAsync(t =>
                 !t.IsReserved && t.ControlTimestamp > holdExpiration
             );
 
             return onHoldCount;
+        }
+
+        private async Task<List<int>> GetCandidateTicketIds(DateTime holdExpiration)
+        {
+            return await _db.Tickets
+                .Where(t => !t.IsReserved && (t.ControlTimestamp == null || t.ControlTimestamp < holdExpiration))
+                .Select(t => t.Id)
+                .ToListAsync();
+        }
+
+        private List<int> PickRandomTicketIds(List<int> candidateIds, int count)
+        {
+            var random = new Random();
+            return candidateIds
+                .OrderBy(_ => random.Next())
+                .Take(count)
+                .ToList();
+        }
+
+        private async Task<List<Ticket>> MarkTicketsOnHold(List<int> selectedIds, DateTime now)
+        {
+            var tickets = await _db.Tickets
+                .Where(t => selectedIds.Contains(t.Id))
+                .ToListAsync();
+
+            foreach (var ticket in tickets)
+            {
+                ticket.ControlTimestamp = now;
+            }
+
+            await _db.SaveChangesAsync();
+            return tickets;
         }
     }
 }
