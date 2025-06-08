@@ -4,9 +4,7 @@ using Server.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -38,8 +36,15 @@ app.UseCors();
 
 app.UseHttpsRedirection();
 
+// ?? Required for Blazor WASM hosting
+app.UseBlazorFrameworkFiles();
+app.UseStaticFiles();
+
 app.UseAuthorization();
 
 app.MapControllers();
+
+// ?? Required for Blazor to handle routing
+app.MapFallbackToFile("index.html");
 
 app.Run();
