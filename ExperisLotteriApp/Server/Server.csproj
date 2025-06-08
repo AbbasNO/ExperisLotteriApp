@@ -25,10 +25,9 @@
 		<ProjectReference Include="..\Client\Client.csproj" />
 	</ItemGroup>
 
-	<!-- Add this Target to build and publish Client into Server's wwwroot -->
+	<!-- Cross-platform publish of the Blazor client into wwwroot -->
 	<Target Name="PublishClient" AfterTargets="ComputeFilesToPublish">
-		<Exec Command="dotnet publish ..\Client\Client.csproj -c $(Configuration) -o $(PublishDir)wwwroot" />
+		<Exec Command="dotnet publish ../Client/Client.csproj -c $(Configuration) -o $(PublishDir)/wwwroot" />
 	</Target>
 
 </Project>
-
