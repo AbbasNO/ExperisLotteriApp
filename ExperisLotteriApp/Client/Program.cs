@@ -2,18 +2,33 @@ using Client;
 using Client.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using System.Net.Http.Json;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped<ITicketService, TicketService>();
+// Load appsettings from wwwroot
+using var httpClient = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
 
-// Use the correct base address for your API
-builder.Services.AddScoped(sp => new HttpClient
+// Choose config file based on environment
+var configFile = builder.HostEnvironment.IsDevelopment()
+    ? "appsettings.Development.json"
+    : "appsettings.Production.json";
+
+var config = await httpClient.GetFromJsonAsync<Dictionary<string, string>>(configFile);
+if (config is not null && config.TryGetValue("ApiBaseUrl", out var apiBaseUrl))
 {
-    //BaseAddress = new Uri("https://localhost:7064/") // Server API URL
-    BaseAddress = new Uri("https://experis-lotteri.azurewebsites.net/") // Server API URL
-});
+    builder.Services.AddScoped(sp => new HttpClient
+    {
+        BaseAddress = new Uri(apiBaseUrl)
+    });
+}
+else
+{
+    throw new Exception("ApiBaseUrl not found in configuration.");
+}
+
+builder.Services.AddScoped<ITicketService, TicketService>();
 
 await builder.Build().RunAsync();
