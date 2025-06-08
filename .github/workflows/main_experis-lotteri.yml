@@ -21,12 +21,15 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore ExperisLotteriApp.sln
+        working-directory: ExperisLotteriApp
 
       - name: Build solution
         run: dotnet build ExperisLotteriApp.sln --no-restore --configuration Release
+        working-directory: ExperisLotteriApp
 
       - name: Run tests
         run: dotnet test ExperisLotteriApp.sln --no-build --configuration Release --verbosity normal
+        working-directory: ExperisLotteriApp
 
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -43,16 +46,19 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore ExperisLotteriApp.sln
+        working-directory: ExperisLotteriApp
 
       - name: Build
         run: dotnet build Server/Server.csproj --no-restore --configuration Release
+        working-directory: ExperisLotteriApp
 
       - name: Publish
         run: dotnet publish Server/Server.csproj --configuration Release --output ./publish
+        working-directory: ExperisLotteriApp
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'experis-lotteri' # Replace with your actual app name
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./publish
+          package: ExperisLotteriApp/publish
