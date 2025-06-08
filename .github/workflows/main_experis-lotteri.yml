@@ -19,13 +19,13 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore ./Server/Server.csproj
+        run: dotnet restore ./ExperisLotteriApp/Server/Server.csproj
 
       - name: Build
-        run: dotnet build --no-restore ./Server/Server.csproj --configuration Release
+        run: dotnet build --no-restore ./ExperisLotteriApp/Server/Server.csproj --configuration Release
 
       - name: Publish
-        run: dotnet publish ./Server/Server.csproj --configuration Release --output ./publish
+        run: dotnet publish ./ExperisLotteriApp/Server/Server.csproj --configuration Release --output ./publish
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
