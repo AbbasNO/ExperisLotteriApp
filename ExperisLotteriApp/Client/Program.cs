@@ -12,7 +12,8 @@ builder.Services.AddScoped<ITicketService, TicketService>();
 // Use the correct base address for your API
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri("https://localhost:7064/") // Server API URL
+    //BaseAddress = new Uri("https://localhost:7064/") // Server API URL
+    BaseAddress = new Uri("https://experis-lotteri.azurewebsites.net/") // Server API URL
 });
 
 await builder.Build().RunAsync();
