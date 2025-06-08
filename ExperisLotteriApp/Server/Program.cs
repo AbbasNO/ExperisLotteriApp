@@ -36,7 +36,7 @@ app.UseCors();
 
 app.UseHttpsRedirection();
 
-// ?? Required for Blazor WASM hosting
+
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
@@ -44,7 +44,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// ?? Required for Blazor to handle routing
+
 app.MapFallbackToFile("index.html");
 
 app.Run();
