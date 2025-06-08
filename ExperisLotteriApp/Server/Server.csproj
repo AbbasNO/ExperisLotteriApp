@@ -25,6 +25,12 @@
 		<ProjectReference Include="..\Client\Client.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Update="appsettings.Release.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
 	<!-- Cross-platform publish of the Blazor client into wwwroot -->
 	<Target Name="PublishClient" AfterTargets="ComputeFilesToPublish">
 		<Exec Command="dotnet publish ../Client/Client.csproj -c $(Configuration) -o $(PublishDir)/wwwroot" />
