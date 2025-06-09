@@ -9,9 +9,17 @@
 <h3>On Hold Tickets: @TicketsCount?.OnHoldTickets</h3>
 
 <div class="mt-4">
+    <label>Your Name:</label>
+    <input type="text" @bind="userName" class="form-control" />
+</div>
+
+<div class="mt-4">
     <label>How many tickets do you want to hold (1–10)?</label>
-    <input type="number" min="1" max="10" @bind="ticketsToHold" />
-    <button class="btn btn-primary" @onclick="ReserveTickets">Reserve</button>
+    <input type="number" min="1" max="10" @bind="ticketsToHold" class="form-control" />
+</div>
+
+<div class="mt-2">
+    <button class="btn btn-primary" @onclick="ReserveTickets" disabled="@IsReserveDisabled">Reserve</button>
 </div>
 
 @if (!string.IsNullOrEmpty(errorMessage))
@@ -22,7 +30,10 @@
 @code {
     private AvailableTicketsDTO? TicketsCount;
     private int ticketsToHold = 1;
+    private string userName = string.Empty;
     private string? errorMessage;
+
+    private bool IsReserveDisabled => string.IsNullOrWhiteSpace(userName);
 
     protected override async Task OnInitializedAsync()
     {
@@ -31,14 +42,21 @@
 
     private async Task ReserveTickets()
     {
+        errorMessage = null;
+
+        if (string.IsNullOrWhiteSpace(userName))
+        {
+            errorMessage = "Name is required.";
+            return;
+        }
+
         try
         {
             var heldTickets = await TicketService.HoldTicketsAsync(ticketsToHold);
             if (heldTickets.Any())
             {
-                // Navigate to confirmation page with ticket numbers in query
                 var ids = string.Join(",", heldTickets.Select(t => t.Number));
-                NavManager.NavigateTo($"/hold-confirmation?ids={ids}");
+                NavManager.NavigateTo($"/hold-confirmation?ids={ids}&name={Uri.EscapeDataString(userName)}");
             }
             else
             {

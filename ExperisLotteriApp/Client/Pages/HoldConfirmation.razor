@@ -6,7 +6,7 @@
 
 <PageTitle>Confirm Tickets</PageTitle>
 
-<h3>Tickets On Hold</h3>
+<h3>Tickets On Hold by @userName</h3>
 
 @if (loading)
 {
@@ -39,12 +39,14 @@ else
     [Parameter] public string? ids { get; set; }
 
     private List<TicketDTO> heldTickets = new();
+    private string? userName;
     private string? error;
     private bool buying = false;
     private bool loading = true;
 
     protected override async Task OnInitializedAsync()
     {
+        await Task.Yield();
         try
         {
             var uri = new Uri(Navigation.Uri);
@@ -56,6 +58,7 @@ else
                 var numbers = idString.Split(',').Select(int.Parse).ToList();
                 heldTickets = numbers.Select(n => new TicketDTO { Number = n }).ToList();
             }
+            userName = query["name"] ?? "Unknown User";
         }
         catch
         {
@@ -70,7 +73,7 @@ else
         buying = true;
         error = null;
 
-        var success = await TicketService.BuyTicketsAsync(heldTickets.Select(t => t.Number).ToList());
+        var success = await TicketService.BuyTicketsAsync(heldTickets.Select(t => t.Number).ToList(), userName);
 
         if (success)
         {

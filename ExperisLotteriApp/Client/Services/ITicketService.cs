@@ -6,7 +6,7 @@ namespace Client.Services
     {
         Task<AvailableTicketsDTO> GetAvailableCountAsync();
         Task<List<TicketDTO>> HoldTicketsAsync(int count);
-        Task<bool> BuyTicketsAsync(List<int> ticketNumbers);
+        Task<bool> BuyTicketsAsync(List<int> ticketNumbers, string name);
         Task<List<WinnerResultDTO>> DrawWinnersAsync();
 
     }

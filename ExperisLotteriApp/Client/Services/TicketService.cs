@@ -30,11 +30,11 @@ namespace Client.Services
             throw new Exception(await response.Content.ReadAsStringAsync());
         }
 
-        public async Task<bool> BuyTicketsAsync(List<int> ticketNumbers)
+        public async Task<bool> BuyTicketsAsync(List<int> ticketNumbers, string name)
         {
             var request = new TicketReserveRequestDTO
             {
-                User = "TestUser",
+                User = name,
                 TicketNumbers = ticketNumbers
             };
 
